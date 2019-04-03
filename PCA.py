@@ -48,20 +48,21 @@ def PCA_Sc(X,n_components):
     # clucurate eigenvalue & Eigenvector
     w,v = np.linalg.eig(X_TrX)
     # create D
-    D = []
-    for i in range(n_components):
-        D.append(v[:,i])
-    D = np.array(D)
-    D_reshape = np.reshape(D,(n_components,columns))
+    D_list = [v[:,i] for i in range(n_components)]
+    D_array = np.array(D_list)
+    D_reshape = np.reshape(D_array,(n_components,columns))
+    D = D_reshape.T
     # colucurate D_TX
-    X_transform = np.dot(D_reshape,X.T)
-    return X_transform
+    X_transform = np.dot(D.T,X.T)
+    return D,X_transform
         
 if __name__ =='__main__':
     # create dataset
     X = create_X()
     # sklearn aproach
     components,x = PCA_Sk(X,2)
+    
     P_sk = np.dot(components,X.T)
+    components = components.T
     # scratch aproarch
-    P_Sc = PCA_Sc(X,2)
+    D,P_Sc = PCA_Sc(X,2)
